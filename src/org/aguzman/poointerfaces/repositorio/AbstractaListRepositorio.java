@@ -1,7 +1,9 @@
 package org.aguzman.poointerfaces.repositorio;
 
 import org.aguzman.poointerfaces.modelo.BaseEntity;
+import org.aguzman.poointerfaces.repositorio.exception.EscrituraAccesoDatoException;
 import org.aguzman.poointerfaces.repositorio.exception.LecturaAccesoDatoException;
+import org.aguzman.poointerfaces.repositorio.exception.RegistroDuplicadoAcessoDatoException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,16 @@ public class AbstractaListRepositorio<T extends BaseEntity> implements Ordenable
     }
 
     @Override
-    public void crear(T t) {
+    public void crear(T t) throws EscrituraAccesoDatoException {
+        if (t==null){
+            throw new EscrituraAccesoDatoException("Error al insertar un objeto null");
+        }
+
+        if (this.dataSource.contains(t)) {
+            throw new RegistroDuplicadoAcessoDatoException("Error el objeto con id "+
+                    t.getId()+" existe en el repositorio");
+        }
+
         this.dataSource.add(t);
     }
 
